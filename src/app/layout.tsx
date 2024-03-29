@@ -17,10 +17,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        {" "}
-        <h1 className="text-center my-4 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Focused Youtube
-        </h1>
         {children}
       </body>
     </html>

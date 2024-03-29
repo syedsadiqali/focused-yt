@@ -7,6 +7,47 @@
 import * as youtubesearchapi from "npm:youtube-search-api@1.2.1";
 import { corsHeaders } from "../cors.ts";
 
+const SEARCH_ROUTE = new URLPattern({ pathname: "/get-vidoes/search" });
+const PLAYLIST_ROUTE = new URLPattern({ pathname: "/get-vidoes/playlist" });
+
+const SUGGEST_ROUTE = new URLPattern({ pathname: "/get-vidoes/suggest" });
+const CHANNEL_ROUTE = new URLPattern({ pathname: "/get-vidoes/channel" });
+const VIDEO_DETAIL_ROUTE = new URLPattern({ pathname: "/get-vidoes/video" });
+
+async function getSearch(req) {
+  const { query, playlists, count, type } = await req.json();
+
+  if (!query) {
+    return { error: "Query is required" };
+  }
+  
+  let type1 = type ? { type: type } : undefined;
+  
+  var isTrueSet = (String(playlists).toLowerCase() === 'true');
+
+
+  const videos = await youtubesearchapi.GetListByKeyword(
+    query,
+    isTrueSet || true,
+    count || 10,
+    type1
+  );
+
+  return { result: videos };
+}
+
+async function getPlaylist(req) {
+  const { id, count } = await req.json();
+
+  if (!id) {
+    return { error: "Playlist id is required!" };
+  }
+
+  const videos = await youtubesearchapi.GetPlaylistData(id, count || 10);
+
+  return { result: videos };
+}
+
 console.log("Hello from Functions!");
 
 Deno.serve(async (req) => {
@@ -15,18 +56,28 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { query } = await req.json();
+    let searchRouteMatch = SEARCH_ROUTE.exec(req.url);
+    let playlistRouteMatch = PLAYLIST_ROUTE.exec(req.url);
 
-    if (!query) {
-      return new Response(JSON.stringify({ error: "Query is required" }), {
+    let result1, error1;
+    if (searchRouteMatch) {
+      const { result, error } = await getSearch(req);
+      result1 = result;
+      error1 = error;
+    } else if (playlistRouteMatch) {
+      const { result, error } = await getPlaylist(req);
+      result1 = result;
+      error1 = error;
+    }
+
+    if (error1) {
+      return new Response(JSON.stringify({ error1 }), {
         status: 404,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const videos = await youtubesearchapi.GetListByKeyword(query, true, 10);
-
-    return new Response(JSON.stringify(videos), {
+    return new Response(JSON.stringify(result1), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
