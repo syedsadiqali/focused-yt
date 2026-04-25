@@ -16,6 +16,8 @@ export interface Root {
 	shortBylineText: ShortBylineText
 	length: Length
 	isLive: boolean
+	publishedTimeText?: string
+	viewCountText?: string
   }
   
   export interface Thumbnail {

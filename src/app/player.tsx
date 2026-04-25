@@ -1,20 +1,24 @@
+"use client";
+
 import YouTube, { YouTubeProps } from "react-youtube";
 
-export default function Player({videoId = ""}: {videoId?: string}) {
-  const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-    // access to player in all event handlers via event.target
-    event.target.pauseVideo();
-  };
-
+export default function Player({
+  videoId = "",
+  width = 640,
+  height = 360,
+}: {
+  videoId?: string;
+  width?: number;
+  height?: number;
+}) {
   const opts: YouTubeProps["opts"] = {
-    height: "390",
-    width: "640",
+    height: String(height),
+    width: String(width),
     playerVars: {
-      // https://developers.google.com/youtube/player_parameters
-      autoplay: 0,
-	  rel: 0
+      autoplay: 1,
+      rel: 0,
     },
   };
 
-  return <YouTube videoId={videoId} opts={opts} onReady={onPlayerReady} />;
+  return <YouTube videoId={videoId} opts={opts} />;
 }
