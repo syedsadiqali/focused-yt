@@ -31,6 +31,17 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare / wrangler
+.wrangler/
+
+# vinext
+.vinext/
+dist/
+
+# claude
+.claude/
+skills-lock.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

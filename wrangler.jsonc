@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "focused-x",
+  "name": "focustube",
   "compatibility_date": "2026-04-25",
   "compatibility_flags": [
     "nodejs_compat"
